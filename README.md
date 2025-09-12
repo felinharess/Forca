@@ -1,0 +1,1 @@
+Para exercitar a lógica e evoluir no entendimento de estrutura de dados, foi proposto o desenvolvimento de um jogo basico de forca, programado em python temos a opção de jogar "com ajuda" no qual basta teclar "!" para que 3 letras aleatórias da palavra sejam mostradas
