@@ -51,11 +51,13 @@ def letras_ainda_disponiveis(letras_escolhidas):
 
 
 def ativar_dica(palavra_secreta, letras_escolhidas):
-    indice = random.sample(range(len(palavra_secreta)), 3)
-    for num in indice:
+    ajuda = True
+    while ajuda == True:
+        indice = random.randint(0, len(palavra_secreta) - 1)
         progresso = progresso_atual_da_palavra(palavra_secreta, letras_escolhidas)
-        if progresso[num] == '*':
-            letras_escolhidas += palavra_secreta[num]
+        if progresso[indice] == '*':
+            letras_escolhidas += palavra_secreta[indice]
+            ajuda = False
 
     return letras_escolhidas
 
@@ -63,13 +65,11 @@ def forca(palavra_secreta, com_ajuda):
  
     pontos = 10
     letras = ''
-    dicas = 0
     if com_ajuda:
         print(f"Bem vindo ao jogo da forca, veja a palavra abaixo:")
         print(progresso_atual_da_palavra(palavra_secreta, ''))
         print("Você Esta com dez pontos, cada vez que errar uma consoante perderá 1 ponto, caso erre uma vogal voê perderá 2 pontos")
-        print("Lembrando que você escolheu o jogo com ajuda, podendo receber tres letras da palavra, basta digitar !")
-        print("Você só poderá utilizar uma ajuda por rodada, e isso lhe causará a perda de 3 pontos ")
+        print("Lembrando que você escolheu o jogo com ajuda, podendo descobrir uma letra da palavra, basta digitar !")
 
     else:
         print(f"Bem vindo ao jogo da forca, veja a palavra abaixo:")
@@ -79,11 +79,10 @@ def forca(palavra_secreta, com_ajuda):
     while pontos > 0:
         letra_sujerida = input(
             "Digite abaixo a letra que você acha que é a certa:\n").lower()
-        if letra_sujerida == '!' and com_ajuda and dicas < 1:
-            dicas = 1
+        if letra_sujerida == '!' and com_ajuda:
             letras += ativar_dica(palavra_secreta, letras)
             pontos -= 3
-            print(f"Foram liberadas novas tres letras para você: ")
+            print(f"Foi liberada uma nova letra para você: ")
             print(f"Você ainda tem: {pontos} pontos")
             print(
                 f"Veja as letras ainda disponiveis:\n{letras_ainda_disponiveis(letras)}")
@@ -129,7 +128,7 @@ def forca(palavra_secreta, com_ajuda):
 
 lista_de_palavras = carregar_palavras()
 palavra_secreta = escolhe_palavra(lista_de_palavras)
-com_ajuda = False
-forca("amigos", False)
+com_ajuda = True
+forca(palavra_secreta, com_ajuda)
 
 
