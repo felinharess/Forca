@@ -63,72 +63,79 @@ def ativar_dica(palavra_secreta, letras_escolhidas):
 
 def forca(palavra_secreta, com_ajuda):
  
-    pontos = 10
+    tentativas = 10
     letras = ''
+    numero_de_letras_distintas = len(set(palavra_secreta)) 
+    tamanho_da_palavra = len(palavra_secreta)  
+
     if com_ajuda:
         print(f"Bem vindo ao jogo da forca, veja a palavra abaixo:")
         print(progresso_atual_da_palavra(palavra_secreta, ''))
-        print("Você Esta com dez pontos, cada vez que errar uma consoante perderá 1 ponto, caso erre uma vogal voê perderá 2 pontos")
+        print("Você tem 10 tentativas, cada vez que errar uma consoante perderá uma tentativa, caso erre uma vogal voê perderá duas tentativas")
         print("Lembrando que você escolheu o jogo com ajuda, podendo descobrir uma letra da palavra, basta digitar !")
 
     else:
         print(f"Bem vindo ao jogo da forca, veja a palavra abaixo:")
         print(progresso_atual_da_palavra(palavra_secreta, ''))
-        print("Você Esta com dez pontos, cada vez que errar uma consoante perderá 1 ponto, caso erre uma vogal voê perderá 2 pontos")
+        print("Você tem 10 tentativas, cada vez que errar uma consoante perderá uma tentativa, caso erre uma vogal voê perderá duas tentativas")
 
-    while pontos > 0:
+    while tentativas > 0:
         letra_sujerida = input(
             "Digite abaixo a letra que você acha que é a certa:\n").lower()
-        if letra_sujerida == '!' and com_ajuda:
-            letras += ativar_dica(palavra_secreta, letras)
-            pontos -= 3
-            print(f"Foi liberada uma nova letra para você: ")
-            print(f"Você ainda tem: {pontos} pontos")
-            print(
-                f"Veja as letras ainda disponiveis:\n{letras_ainda_disponiveis(letras)}")
-            print(progresso_atual_da_palavra(palavra_secreta, letras))
-            print(
-                '----------------------------------------------------------------------')
-        elif letra_sujerida == '!' and com_ajuda:
-            print(
-                'Você já utilizou as suas dicas da rodada')
-        elif letra_sujerida == '!':
+        if letra_sujerida == '!' and not com_ajuda:
             print(
                 'Você não escolheu o modo com ajuda, portanto esta opção nao está habilitada ')
-
-        letras += letra_sujerida.lower()
-        if letra_sujerida not in palavra_secreta and letra_sujerida != "!":
-            if letra_sujerida in 'aeiou':
-                pontos -= 2
-            else:
-                pontos -= 1
-            print(
-                f"Que pena a palavra secreta não contém a letra {letra_sujerida}")
-            print(f'Total de pontos: {pontos}')
-            print(
-                f"Veja as letras ainda disponiveis:\n{letras_ainda_disponiveis(letras)}")
+        elif letra_sujerida == '!':
+            letras += ativar_dica(palavra_secreta, letras)
+            tentativas -= 3
+            print(f"Foi liberada uma nova letra para você: ")
+            print(f"Você ainda tem: {tentativas} tentativas")
+            print(f"Veja as letras ainda disponiveis:\n{letras_ainda_disponiveis(letras)}")
             print(progresso_atual_da_palavra(palavra_secreta, letras))
             print(
                 '----------------------------------------------------------------------')
-        elif letra_sujerida in palavra_secreta:
-            if jogador_venceu(palavra_secreta, progresso_atual_da_palavra(palavra_secreta, letras)):
-                return print(f"Parabéns você venceu!\nA palavra secreta era: {palavra_secreta}")
-                pontos = 0
-            else:
+        if letra_sujerida in letras:
+            print('Você ja tentou sujerir esta letra')
+        elif len(letra_sujerida) != 1 or not letra_sujerida.isalpha():
+            print("Entrada inválida!")
+        else: 
+            letras += letra_sujerida.lower()
+            if letra_sujerida not in palavra_secreta and letra_sujerida != "!":
+                if letra_sujerida in 'aeiou':
+                    tentativas -= 2
+                else:
+                    tentativas -= 1
                 print(
-                    f"Parabéns, a palavra secreta tem a letra: {letra_sujerida}")
-                print(f"Você ainda tem: {pontos} pontos")
+                    f"Que pena a palavra secreta não contém a letra {letra_sujerida}")
+                print(f'Total de tentativas: {tentativas}')
                 print(
                     f"Veja as letras ainda disponiveis:\n{letras_ainda_disponiveis(letras)}")
                 print(progresso_atual_da_palavra(palavra_secreta, letras))
                 print(
                     '----------------------------------------------------------------------')
+            elif letra_sujerida in palavra_secreta:
+                if jogador_venceu(palavra_secreta, progresso_atual_da_palavra(palavra_secreta, letras)):
+                    pontuacao_final  = tentativas + 4 * numero_de_letras_distintas + 3 * tamanho_da_palavra
+                    tentativas = 0
+                    return print(f"Parabéns você venceu!\nA palavra secreta era: {palavra_secreta}\nSua pontuação final é: {pontuacao_final}")
+                else:
+                    print(
+                        f"Parabéns, a palavra secreta tem a letra: {letra_sujerida}")
+                    print(f"Você ainda tem: {tentativas} tentativas")
+                    print(
+                        f"Veja as letras ainda disponiveis:\n{letras_ainda_disponiveis(letras)}")
+                    print(progresso_atual_da_palavra(palavra_secreta, letras))
+                    print(
+                        '----------------------------------------------------------------------')
     print("Que pena, você perdeu")
+    print("Seu numero de tentativas chegou a 0")
+    print(f"A palavra era: {palavra_secreta}")
 
 
 lista_de_palavras = carregar_palavras()
 palavra_secreta = escolhe_palavra(lista_de_palavras)
-com_ajuda = True
+com_ajuda = False
 forca(palavra_secreta, com_ajuda)
 
 
+    
